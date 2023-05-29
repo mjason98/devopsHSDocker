@@ -46,7 +46,9 @@ pipeline {
                     // stop the previus image
                     sh "ssh -l ${USERNAME} -i ${KEY_FILE} 192.168.105.3 -C docker rm --force mj_app"
 
-                    sh "ssh -l ${USERNAME} -i ${KEY_FILE} 192.168.105.3 -C docker run --detach --publish 4444:4444 --name mj_app ttl.sh/mjapp:1h"
+                    // sh "ssh -l ${USERNAME} -i ${KEY_FILE} 192.168.105.3 -C docker run --detach --publish 4444:4444 --name mj_app ttl.sh/mjapp:1h"
+
+                    sh "ssh -l ${USERNAME} -i ${KEY_FILE} 192.168.105.3 -C docker run --detach --name mj_app ttl.sh/mjapp:1h"
                 }
             }
         }

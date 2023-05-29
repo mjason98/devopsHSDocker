@@ -53,8 +53,8 @@ pipeline {
 
         stage ("Health check"){
             steps{
-                // jenmins can detect if its not 0
                 sh "curl -s 192.168.105.3:4444/api"
+                sh "echo $?"
             }
         }
     }

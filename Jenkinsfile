@@ -2,19 +2,17 @@ pipeline {
     agent any
 
     stages {
-        // stage("Test"){
-        //     steps{
-        //         sh 'go test .'
-        //     }
-        // }
+        stage("Install dependecies"){
+            steps{
+                sh 'pip install -r requirements.txt'
+            }
+        }
 
-        // stage("Build"){
-        //     steps{
-        //         sh 'go version'
-        //         sh 'go build main.go'
-        //         archiveArtifacts artifacts: 'main', followSymlinks: false
-        //     }
-        // }
+        stage("Test"){
+            steps{
+                sh 'pytest .'
+            }
+        }
 
         stage("Build Docker Container"){
             steps{

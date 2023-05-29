@@ -1,24 +1,20 @@
 pipeline {
     agent any
 
-    tools {
-        go 'go_config_1204'
-    }
-
     stages {
-        stage("Test"){
-            steps{
-                sh 'go test .'
-            }
-        }
+        // stage("Test"){
+        //     steps{
+        //         sh 'go test .'
+        //     }
+        // }
 
-        stage("Build"){
-            steps{
-                sh 'go version'
-                sh 'go build main.go'
-                archiveArtifacts artifacts: 'main', followSymlinks: false
-            }
-        }
+        // stage("Build"){
+        //     steps{
+        //         sh 'go version'
+        //         sh 'go build main.go'
+        //         archiveArtifacts artifacts: 'main', followSymlinks: false
+        //     }
+        // }
 
         stage("Build Docker Container"){
             steps{

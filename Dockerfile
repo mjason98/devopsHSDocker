@@ -6,4 +6,4 @@ run pip install Flask
 
 copy web.py /web.py
 
-cmd ["python /web.py"]
+cmd ["python3 /web.py"]

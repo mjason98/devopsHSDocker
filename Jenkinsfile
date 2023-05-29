@@ -53,7 +53,9 @@ pipeline {
 
         stage ("Health check"){
             steps{
+                sh 'echo $?'
                 sh "curl -s 192.168.105.3:4444/api"
+                sh 'echo $?'
             }
         }
     }

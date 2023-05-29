@@ -1,4 +1,4 @@
-from web import SimpleFactory
+from app import SimpleFactory
 
 def test_factory():
     simple = SimpleFactory("My Url")

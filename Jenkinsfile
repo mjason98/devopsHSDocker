@@ -26,37 +26,34 @@ pipeline {
             }
         }
 
-        stage("Pull Docker image"){
+        stage("Run k8s"){
             steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'target_cred', keyFileVariable: 'KEY_FILE', passphraseVariable: 'PASSF', usernameVariable: 'USERNAME')]) {
-                    // some block
-                    sh 'ssh-keyscan 192.168.105.3 > ~/.ssh/known_hosts'
+                withCredentials([file(credentialsId: 'k8s_kube_config', variable: 'KFILE')]) {
                     
-                    sh "ssh -l ${USERNAME} -i ${KEY_FILE} 192.168.105.3 -C docker pull ttl.sh/mjapp:1h"
+                    // delete previous ones
+                    
+                    sh 'kubectl --kubeconfig ${KFILE} delete service mjapp --ignore-not-found'
+
+                    sh 'kubectl --kubeconfig ${KFILE} delete deployment mjapp --ignore-not-found'
+
+                    // create new ones
+
+                    sh 'kubectl --kubeconfig ${KFILE} create deployment mjapp --image=ttl.sh/mjapp:1h --port 4444'
+                    
+                    sh 'kubectl --kubeconfig ${KFILE} scale --replicas=2 deployment mjapp'
+
+                    sh 'kubectl --kubeconfig ${KFILE} expose deployment mjapp --type=ClusterIP --port 4444'
+
                 }
             }
         }
 
-        stage("Run Docker image"){
-            steps{
-                withCredentials([sshUserPrivateKey(credentialsId: 'target_cred', keyFileVariable: 'KEY_FILE', passphraseVariable: 'PASSF', usernameVariable: 'USERNAME')]) {
-                    // some block
-                    sh 'ssh-keyscan 192.168.105.3 > ~/.ssh/known_hosts'
-                    
-                    // stop the previus image
-                    sh "ssh -l ${USERNAME} -i ${KEY_FILE} 192.168.105.3 -C docker rm --force mj_app"
-
-                    sh "ssh -l ${USERNAME} -i ${KEY_FILE} 192.168.105.3 -C docker run --detach --publish 4444:4444 --name mj_app --restart always ttl.sh/mjapp:1h"
-                }
-            }
-        }
-
-        stage ("Health check"){
-            steps{
-                sh 'chmod +x server_check.sh'
-                sh 'sh server_check.sh'
-                // sh 'echo $?'
-            }
-        }
+        // stage ("Health check"){
+        //     steps{
+        //         sh 'chmod +x server_check.sh'
+        //         sh 'sh server_check.sh'
+        //         // sh 'echo $?'
+        //     }
+        // }
     }
 }
